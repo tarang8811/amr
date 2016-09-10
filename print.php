@@ -2,7 +2,21 @@
 require_once("auth.php");
 include "query.php";
 
-$number_of_passenger = $_GET['number_of_passenger'];
+
+if (isset($_GET["print"])) {
+	$id = $_GET["selected_id"];
+	$passenger_name = $_GET["name"];
+	updateTableWithId("passenger_data", $id, ["name"], [$passenger_name]);
+
+	$flight_date = searchWithoutCondition("passenger_data", [], 'id', $id);
+	$flight_data = $flight_date['result'][0];
+	$name = $flight_date['result'][0]['name'];
+
+	$modified_name_array = array();
+	array_push($modified_name_array, $name);
+
+}else{
+	$number_of_passenger = $_GET['number_of_passenger'];
 
 $name = $_GET['name'];
 $flight_data = $_GET['flight_data'];
@@ -24,7 +38,10 @@ for ($i = 0; $i < count($name); $i++) {
 					"PNR" => $flight_data["PNR"],
 					"booked_by" => $member_name,
 				  ];
-		insert("passenger_data",$params);
+		if (!isset($_GET['updated'])) {
+			insert("passenger_data",$params);
+		}
+		
 	}
 }
 
@@ -35,6 +52,10 @@ $updated_number_of_passenger = (int)$number_of_passenger - count($modified_name_
 	}else{
 	/*echo*/ updateColumnWithId("flight_data", $flight_data["id"], "number_of_passenger", $updated_number_of_passenger);
 	}
+}
+
+
+
 
 
 ?>

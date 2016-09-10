@@ -143,11 +143,28 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 			<!---/End-date-piker---->
 			</div>
 			<div class="bnr-right">
+				<label class="inputLabel">Return Date of Journey</label>
+				<input name = "return_date" class="date" id="datepicker1" type="text" placeholder="MM-DD-YY" onfocus="this.value = '';">
+				<!---start-date-piker---->
+				<link rel="stylesheet" href="css/jquery-ui.css" />
+				<script src="js/jquery-ui.js"></script>
+					<script>
+						$(function() {
+						$( "#datepicker,#datepicker1" ).datepicker();
+						});
+					</script>
+			<!---/End-date-piker---->
+			</div>
+				<div class="clearfix"></div>
+		</div>
+		<div class="ban-bottom">
+			<div class="bnr-left">
 				<label class="inputLabel">Number Of Passengers</label>
 				<input name = "number_of_passenger" type="text" placeholder="10">
 			</div>
 				<div class="clearfix"></div>
 		</div>
+
 		<div class="sear">
 			<input type="submit" value="Submit">
 		</div>

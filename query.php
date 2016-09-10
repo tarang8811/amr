@@ -61,29 +61,31 @@ function searchWithConditionReturn($table_name, $columns, $keys, $values){
 
 	$condition = "";
 	for ($i = 0 ; $i < count($keys) ; $i++){
-		if ($keys[$i] == "number_of_passenger") {
-				$condition = $condition . $keys[$i] . " >= " . $values[$i] . " ";
-		}else{
 
-			if ($keys[$i] == "origin") {
-				$condition = $condition . "(". $keys[$i] . " = '" . $values[$i] . "' || " . $keys[$i] . " = '" . $values[$i + 1] . "') AND ";
-			}else if($keys[$i] == "destination"){
-				if(count($keys) > 2){
-					$condition = $condition . "(". $keys[$i] . " = '" . $values[$i] . "' || " . $keys[$i] . " = '" . $values[$i - 1] . "') AND ";
-				}else{
-					$condition = $condition . "(". $keys[$i] . " = '" . $values[$i] . "' || " . $keys[$i] . " = '" . $values[$i - 1] . "')";
-				}
-				
+		if($keys[$i] != "date" && $keys[$i] != "return_date"){
+			if ($keys[$i] == "number_of_passenger") {
+				$condition = $condition . $keys[$i] . " >= " . $values[$i] . " ";
 			}else{
-				if ($i == count($keys) - 1) {
-					$condition = $condition . $keys[$i] . " = '" . $values[$i] . "' ";
+
+				if ($keys[$i] == "origin") {
+					$condition = $condition . "(". $keys[$i] . " = '" . $values[$i] . "' || " . $keys[$i] . " = '" . $values[$i + 1] . "') AND ";
+				}else if($keys[$i] == "destination"){
+					if(count($keys) > 2){
+						$condition = $condition . "(". $keys[$i] . " = '" . $values[$i] . "' || " . $keys[$i] . " = '" . $values[$i - 1] . "') AND ";
+					}else{
+						$condition = $condition . "(". $keys[$i] . " = '" . $values[$i] . "' || " . $keys[$i] . " = '" . $values[$i - 1] . "')";
+					}
+				
 				}else{
-					$condition = $condition . $keys[$i] . " = '" . $values[$i] . "' AND ";
+					if ($i == count($keys) - 1) {
+						$condition = $condition . $keys[$i] . " = '" . $values[$i] . "' ";
+					}else{
+						$condition = $condition . $keys[$i] . " = '" . $values[$i] . "' AND ";
+					}
 				}
+			
 			}
-			
-		}
-			
+		}	
 	}
 
 	if (count($columns) > 0) {
@@ -96,12 +98,30 @@ function searchWithConditionReturn($table_name, $columns, $keys, $values){
 	}else{
 		$sql_query = "SELECT * FROM " . $table_name . " WHERE " . $condition . "ORDER BY number_of_passenger DESC";
 	}
-	echo $sql_query;
+	//echo $sql_query;
 	return queryAndGetData($con, $sql_query);
 	
 	
 }
 
+
+function searchWithoutCondition($table_name, $columns, $key, $value){
+	include 'connect.php'; 
+	$column_name = "";
+	if (count($columns) > 0) {
+		foreach ($columns as $column) {
+			$columns_name = $columns_name . $column . ", ";
+		}
+		$columns_name = rtrim($columns_name, ", ");
+		$sql_query = "SELECT " . $columns_name ." FROM " . $table_name . " WHERE " . $key . "=" . "'" . $value . "'";
+	}else{
+		$sql_query = "SELECT * FROM " . $table_name . " WHERE " . $key . "=" . "'" . $value . "'";
+	}
+
+	return queryAndGetData($con, $sql_query);
+	
+	
+}
 
 function search($table_name, $columns, $key, $value){
 	include 'connect.php'; 
@@ -265,7 +285,29 @@ function queryAndGetData($con, $sql_query){
 
 
 
+function formatresult($results, $date, $date_return, $origin, $destination){
+	$formatted_array = array();
+	
+	foreach ($results as $result) {
+		if ($result['origin'] == $origin) {
+			if($result['date'] == $date){
+				array_push($formatted_array, $result);
+			}
+		}
+		/*echo '<pre>';
+		print_r($result);
+		echo '</pre>';
+		echo $date;
+		echo $date_return;*/
+		if ($result['origin'] == $destination) {
+			if($result['date'] == $date_return){
+				array_push($formatted_array, $result);
+			}
+		}
+	}
 
+	return ['status' => 'ok' , 'result' => $formatted_array];
+}
 
 
 

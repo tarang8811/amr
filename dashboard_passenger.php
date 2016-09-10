@@ -1,4 +1,7 @@
 <?php
+error_reporting(E_ALL);
+ini_set('display_errors', TRUE);
+
 require_once("auth.php");
 if (!$admin) {
 	header("location: index.php");
@@ -9,12 +12,12 @@ if (isset($_GET["update"])) {
 	$passenger_name = $_GET["name"];
 	updateTableWithId("passenger_data", $id, ["name"], [$passenger_name]);
 
+
 }
 $result = searchAllWithoutCondition("passenger_data");
 $column1 = 21;
 $column2 = 13;
 ?>
-
 <!DOCTYPE HTML>
 <html>
 <head>
@@ -120,7 +123,7 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 		if ($result["status"] == "ok") {
 				$j = 0;
 				foreach ($result["result"] as $search_result) {
-		echo '<form action = "dashboard_passenger.php" method = "get">';
+		echo '<form action = "print.php" method = "get">';
 		echo '<div style = "padding-top : 20px">';
 		echo '	<li class="trav" style = "width : ' . $column1. '% ; padding-top : 10px">
 					<div ><input style = "border:none;" name = "name" type = "text" value = "' . $search_result["name"] . '"></div>
@@ -169,7 +172,7 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 					<input name = "update" type = "hidden" value = true"';
 
 		echo'       ">
-					<input  style = "margin-top: 10px;" type="submit" value="Save">
+					<input  name = "print" value = "print" style = "margin-top: 10px;" type="submit" value="Print">
 					</form>
 				</div>
 				</li>';
@@ -191,6 +194,8 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 		</ul>
 	</div>
 </div>
+
+
 <!--- /bus-midd ---->
 <!--- footer-top ---->
 <!--- /footer-top ---->

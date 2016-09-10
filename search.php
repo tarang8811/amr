@@ -28,9 +28,18 @@ if (!empty($_GET['selected_radio'])) {
 	if ($selection == "one_way") {
 		$result = searchWithCondition("flight_data", [], $keys, $values);
 	}else{
-		if (!empty($_GET['destination']) && !empty($_GET['origin'])) {
-			$result = searchWithConditionReturn("flight_data", [], $keys, $values);
+		if (!empty($_GET['return_date'])) {
+			array_push($keys, "return_date");
+			array_push($values, $_GET['return_date']);
+			if (!empty($_GET['destination']) && !empty($_GET['origin'])) {
+			$unformatted_result = searchWithConditionReturn("flight_data", [], $keys, $values);
+			if (count($unformatted_result["result"]) > 0) {
+				$result = formatresult($unformatted_result["result"], $_GET['date'], $_GET['return_date'], $_GET['origin'], $_GET['destination']);
+			}
+			
+			}
 		}
+		
 	}
 }
 
